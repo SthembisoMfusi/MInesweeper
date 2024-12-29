@@ -84,9 +84,43 @@ class mainGUI:
         if self.board[row][col] == 'bomb':
             self.gameOver = True
             self.showAllBombs()
-            tk.messagebox.showinfo('Game Over', 'You hit a bomb')
+            self.gameOverPrompt()
         else:
             self.showEmpties(row, col)
+    def gameOverPrompt(self):
+        """
+        Displays a game over message with an option to restart.
+        """
+        game_over_window = tk.Toplevel(self.master)
+        game_over_window.title("Game Over")
+
+        window_width = 250
+        window_height = 100
+        screen_width = game_over_window.winfo_screenwidth()
+        screen_height = game_over_window.winfo_screenheight()
+        x = (screen_width // 2) - (window_width // 2)
+        y = (screen_height // 2) - (window_height // 2)
+        game_over_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+        tk.Label(game_over_window, text="You hit a bomb! Game Over.", font=("Arial", 12)).pack(pady=10)
+        def restart_game():
+            """
+            Handles the restart button click.
+            """
+            game_over_window.destroy()
+            self.master.destroy()  # Destroy the current game window
+            # Signal to the main loop to start a new game
+            if self.restart_callback:
+                self.restart_callback()
+
+        tk.Button(game_over_window, text="Restart", command=restart_game, width=10).pack(pady=5)
+        game_over_window.grab_set()
+
+    def set_restart_callback(self, callback):
+        """
+        Sets the callback function to be called when the game needs to be restarted.
+        """
+        self.restart_callback = callback
 
     def showEmpties(self, row, col):
         """
