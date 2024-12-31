@@ -103,19 +103,20 @@ class mainGUI:
         game_over_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
         tk.Label(game_over_window, text="You hit a bomb! Game Over.", font=("Arial", 12)).pack(pady=10)
+
         def restart_game():
             """
             Handles the restart button click.
             """
             game_over_window.destroy()
-            self.master.destroy()  # Destroy the current game window
-            # Signal to the main loop to start a new game
+            # Only restart if a callback is set
             if self.restart_callback:
                 self.restart_callback()
 
         tk.Button(game_over_window, text="Restart", command=restart_game, width=10).pack(pady=5)
-        game_over_window.grab_set()
 
+        game_over_window.grab_set()  # Make the game over window modal (block interaction with other windows)
+        
     def set_restart_callback(self, callback):
         """
         Sets the callback function to be called when the game needs to be restarted.
